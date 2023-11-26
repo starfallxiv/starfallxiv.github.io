@@ -1,0 +1,21 @@
+log line indices
+
+0x01 = zone changed
+0x02 = player changed handler
+0x03 = added combatant handler
+0x04 = removed combatant
+0x0C = player stats handler
+0x14 = ability use
+0x15 = ability hit
+0x16 = ability hit clone
+0x17 = ability cancel
+0x18 = overtime tick handler
+0x1B = head marker handler
+0x1D = sign
+0x1F = job gauge handler
+0x22 = nameplate toggle
+0x23 = tether updated
+0x24 = limit gauge handler
+0x25 = action sync handler
+0x26 = network status handler
+0x27 = HP Updated

@@ -3,13 +3,7 @@
     <meta charset="utf-8" />
     <title></title>
     <style>
-
-        /*
-            表示設定 (1)
-        */
-
         * {
-            /* フォント （一部のフォントは上手く適用されない） */
             font-family: "Meiryo";
             font-size: 12px;
         }
@@ -20,101 +14,24 @@
 
         html {
             height: 100%;
-
-            /* 外枠 */
-            /*border: 1px solid rgba(0,0,0,0.1);*/
-            
-            /* はみ出た内容はスクロールバーを表示させずに隠す
-             * 今のところ、ブラウザへの入力はできないので表示させても無意味 */
             overflow: hidden;
-            
-            /* 背景色 */
             background-color: transparent;
         }
 
         .resizeHandle {
-            /* リサイズ用のハンドル
-             * リサイズができる場所はウィンドウ右下の16x16ピクセルの場所
-             * この部分が完全に透明だとマウス入力が透過してしまってサイズを変更できなくなる */
             background-image: url(handle.png);
             background-position: bottom right;
             background-repeat: no-repeat;
             box-sizing: border-box;
         }
-
-        #combatantTable {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-        }
-
-        /* キャラクターデータのテキストの設定 */
-        #combatantTableBody * {
-            color: #E2EBF5;
-            text-shadow: -1px 0 3px #217AA2, 0 1px 3px #217AA2, 1px 0 3px #217AA2, 0 -1px 3px #217AA2;
-            font-weight: 300;
-
-            /* はみ出たテキストを「…」で省略する */
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
-
-        /* エンカウント情報とテーブルヘッダ内のテキストの設定 */
-        #encounter,
-        #combatantTableHeader * {
-            color: #DED7BE;
-            text-shadow: -1px 0 2px #795516, 0 1px 2px #795516, 1px 0 2px #795516, 0 -1px 2px #795516;
-            font-weight: 300;
-            white-space: nowrap;
-        }
-
-        /* テーブルヘッダの下線の設定 */
-        #combatantTableHeader tr {
-            border-bottom: 1px solid #DED7BE;
+        
+        label, progress {
+            color: #ffffff;
         }
 
     </style>
     <script src="https://ngld.github.io/OverlayPlugin/assets/shared/common.min.js"></script>
     <script>
-        var encounterDefine = "{title} / Time: {duration} / DPS: {ENCDPS}";
-        var useHTMLEncounterDefine = false;
-        var headerDefine =
-        [
-            //{ text: "#", width: "5%", align: "center" },
-            { text: "Name", width: "25%", align: "left" },
-            { text: "Job", width: "8%", align: "center" },
-            { text: "DPS (%)", width: "18%", align: "center", span: 2 },
-            { text: "HPS (%)", width: "18%", align: "center", span: 2 },
-            { text: "Acc.(%)", width: "16%", align: "right" },
-            { text: "Crt.(%)", width: "14%", align: "right" },
-        ];
-
-        var bodyDefine =
-        [
-            //{ text: rankingText, width: "5%", align: "center", effect: deadYatsuEffect },
-            { text: "{name}", width: "25%" },
-            { text: "{Job}", width: "8%", align: "center" },
-            { text: "{encdps}", width: "16%", align: "right" },
-            { text: "{damage%}", width: "5%", align: "right" },
-            { text: "{enchps}", width: "16%", align: "right" },
-            { text: "{healed%}", width: "5%", align: "right" },
-            { text: "{tohit}%", width: "16%", align: "right" },
-            { text: "{crithit%}", width: "14%", align: "right" },
-        ];
-
-        function rankingText(combatant, index) {
-            return (index + 1).toString();
-        }
-        
-        function deadYatsuEffect(cell, combatant, index) {
-            var deaths = parseInt(combatant["deaths"]);
-            if (deaths > 0) {
-                cell.style.color = "#FFA0A0";
-                cell.style.textShadow = "-1px 0 3px #802020, 0 1px 3px #802020, 1px 0 3px #802020, 0 -1px 3px #802020";
-            }
-        }
-        
         document.addEventListener("onOverlayStateUpdate", function (e) {
             if (!e.detail.isLocked) {
                 displayResizeHandle();
@@ -131,15 +48,23 @@
             document.documentElement.classList.remove("resizeHandle");
         }
 
+        addOverlayListener("LogLine", (logEvent)=> updateLog(logEvent));
         addOverlayListener("CombatData", (e) => update(e));
         startOverlayEvents();
 
         function update(data) {
-            updateEncounter(data);
-            if (document.getElementById("combatantTableHeader") == null) {
-                updateCombatantListHeader();
-            }
-            updateCombatantList(data);
+            console.log(data);
+            //updateEncounter(data);
+            //if (document.getElementById("combatantTableHeader") == null) {
+            //    updateCombatantListHeader();
+            //}
+            //updateCombatantList(data);
+        }
+
+        function updateLog(logEvent) {
+            var encounterElem = document.getElementById('encounter');
+            var text = logEvent;
+            encounterElem.innerText = logEvent;
         }
 
         function updateEncounter(data) {
@@ -286,16 +211,8 @@
     </script>
 </head>
 <body>
-
-    <div id="encounter">
-        No data to show.
-        <!-- ここにエンカウント情報が入る -->
-    </div>
-
-    <table id="combatantTable">
-        <!-- ここにヘッダが入る -->
-        <!-- ここに各キャラの情報が入る -->
-    </table>
-
+    <div id="data"></div>
+    <label for="bossHp">Boss HP:</label>
+    <progress id="bossHp" value="32" max="100"></progress>
 </body>
 </html>
